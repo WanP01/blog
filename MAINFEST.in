@@ -1,0 +1,2 @@
+include README.md
+recursive-include blog *.css *.js *.jpg *.gif *.png *.html *.md
