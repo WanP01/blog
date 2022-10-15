@@ -1,0 +1,3 @@
+include *
+graft blog
+recursive-include blog/themes *

@@ -7,8 +7,9 @@ from invoke import task
 
 PROJECT_NAME = 'blog'
 SETTINGS_BASE = 'blog/blog/settings/base.py'
-DEPLOY_PATH = '/home/wanpeng/.virtualenv/django-test'
-# VENV_ACTIVATE = os.path.join(DEPLOY_PATH, 'bin', 'activate')
+DEPLOY_PATH = '/home/wanpeng/Desktop/fabric-test/venvs/blog-env'
+VENV_ACTIVATE = os.path.join(DEPLOY_PATH, 'bin', 'activate')
+# DEPLOY_PATH = '/home/wanpeng/.virtualenv/fabric-test'
 PYPI_HOST = '127.0.0.1'
 PYPI_INDEX = 'http://127.0.0.1:9090/simple'
 PROCESS_COUNT = 2
@@ -31,7 +32,7 @@ def build(c, version=None, bytescode=False):
 
     result = c.run('echo $SHELL', hide=True)
     user_shell = result.stdout.strip('\n')
-    c.run('python setup.py bdist_wheel upload -r internal', warn=True, shell=user_shell)
+    c.run('python setup.py sdist  upload -r internal', warn=True, shell=user_shell)
 
     _version.revert()
 
@@ -49,7 +50,8 @@ def deploy(c, version, profile):
     """
     _ensure_virtualenv(c)
     package_name = PROJECT_NAME + '==' + version
-    with c.prefix('workon %s' % DEPLOY_PATH.split('/')[-1]):
+    with c.prefix('source %s' % VENV_ACTIVATE):
+    # with c.prefix('workon %s' % DEPLOY_PATH.split('/')[-1]):
         c.run('pip install %s -i %s --trusted-host %s' % (
             package_name,
             PYPI_INDEX,
@@ -82,21 +84,23 @@ class _Version:
 
 
 def _ensure_virtualenv(c):
-    # if c.run('test -f %s' % VENV_ACTIVATE, warn=True).ok:
-    #     return True
-    #
-    # if c.run('test -f %s' % DEPLOY_PATH, warn=True).failed:
-    #     c.run('mkdir -p %s' % DEPLOY_PATH)
-    #
-    # c.run('python3.6 -m venv %s' % DEPLOY_PATH)
+    if c.run('test -f %s' % VENV_ACTIVATE, warn=True).ok:
+        return True
+
+    if c.run('test -f %s' % DEPLOY_PATH, warn=True).failed:
+        c.run('mkdir -p %s' % DEPLOY_PATH)
+
+    with c.cd('/home/wanpeng/Desktop/fabric-test/venvs/'):
+        c.run('virtualenv %s' % DEPLOY_PATH.split('/')[-1])
     c.run('mkdir -p %s/tmp' % DEPLOY_PATH)  # 创建tmp目录存放pid和log
 
-    c.run('source /usr/local/bin/virtualenvwrapper.sh')
+    # c.run('source /usr/local/bin/virtualenvwrapper.sh')
+    # c.run('source ~/.bashrc')
+    # if c.run('test -f %s' %DEPLOY_PATH , warn=True).ok:
+    #     c.run('rmvirtualenv %s'%DEPLOY_PATH)
+    # c.run('mkvirtualenv %s' %DEPLOY_PATH)
 
-    if c.run('test -f %s' % DEPLOY_PATH, warn=True).ok:
-        c.run('rmvirtualenv %s' % DEPLOY_PATH)
 
-    c.run('mkvirtualenv %s' % DEPLOY_PATH)
 
 
 def _upload_conf(c, deploy_path, profile):
