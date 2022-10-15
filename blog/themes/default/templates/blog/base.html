@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}首页{% endblock %}—Blog wanpeng‘s博客系统</title>
+</head>
+<body>
+<!--分类导航 -->
+<div>顶部分类：
+    {% for cate in nav_category %}
+        <a href={% url 'category-list' cate.id %}>{{ cate.name }}</a>
+    {% endfor %}
+</div>
+
+<!--主体页面逻辑-->
+{% block main %}
+{% endblock %}
+<!--主体页面逻辑-->
+
+<!--分类导航 -->
+<div>底部分类：
+    {% for cate in normal_category %}
+        <a href={% url 'category-list' cate.id %}>{{ cate.name }}</a>
+    {% endfor %}
+</div>
+<!--侧边栏 -->
+<div>侧边栏展示：
+    {% for siderbar in siderbars %}
+    <h4>{{ siderbar.title }}</h4>
+    {{ siderbar.content_html }}
+    {% endfor %}
+</div>
+</body>
+</html>
