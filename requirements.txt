@@ -9,7 +9,7 @@ django-autocomplete-light==3.9.4
 django-ckeditor==6.5.1
 django-crispy-forms==1.14.0
 django-debug-toolbar==3.7.0
-django-debug-toolbar-line-profiling @ git+https://github.com/mikekeda/django-debug-toolbar-line-profiler.git@85740b1ce40037b602e744e7037286a679d3ade0
+django-debug-toolbar-line-profiling==0.7.3
 django-formtools==2.2
 django-js-asset==2.0.0
 djangorestframework==3.14.0
