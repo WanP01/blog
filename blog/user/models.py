@@ -4,7 +4,7 @@ from django.db import models
 
 #改写django 自带的 User 类
 from django.contrib.auth.models import AbstractUser
-
+#设置settings.AUTH_USER_MODEL = '应用名.类名'
 # username,password,email,first_name,last_name,is_superuser,is_staff,is_active,last_login,date_joined
 #user = authenticate(username=username,password=password)
 #set_password('password')

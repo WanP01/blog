@@ -1,7 +1,8 @@
 from django.db import models
 
 # Create your models here.
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from user.models import UserInfo
 from mainblog.models import Post
 class Comment(models.Model):
     STATUS_NORMAL = 1

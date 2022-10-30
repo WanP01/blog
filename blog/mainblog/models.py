@@ -3,7 +3,8 @@ from functools import cached_property
 from django.db import models
 
 # Create your models here.
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+from user.models import UserInfo
 from django.db import models
 import mistune
 
@@ -21,7 +22,7 @@ class Category(models.Model):
     name = models.CharField(max_length=50,verbose_name='名称')
     status = models.PositiveIntegerField(default=STATUS_NORMAL,choices=STATUS_ITEMS,verbose_name='状态')
     is_nav = models.BooleanField(default=False,verbose_name='是否为导航')
-    owner = models.ForeignKey(User,verbose_name='作者',on_delete=models.DO_NOTHING)
+    owner = models.ForeignKey(UserInfo,verbose_name='作者',on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
 
     class Meta:
@@ -54,7 +55,7 @@ class Tag(models.Model):
 
     name = models.CharField(max_length=50,verbose_name='名称')
     status = models.PositiveIntegerField(default=STATUS_NORMAL,choices=STATUS_ITEMS,verbose_name='状态')
-    owner = models.ForeignKey(User,verbose_name='作者',on_delete=models.DO_NOTHING)
+    owner = models.ForeignKey(UserInfo,verbose_name='作者',on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
 
     class Meta:
@@ -78,7 +79,7 @@ class Post(models.Model):
     status = models.PositiveIntegerField(choices=STATUS_ITEMS,default=STATUS_NORMAL,verbose_name='状态')
     category = models.ForeignKey(Category,verbose_name='分类',on_delete=models.DO_NOTHING)
     tag = models.ManyToManyField(Tag,verbose_name='标签')
-    owner = models.ForeignKey(User,verbose_name='作者',on_delete=models.DO_NOTHING)
+    owner = models.ForeignKey(UserInfo,verbose_name='作者',on_delete=models.DO_NOTHING)
     created_time = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
 
     pv = models.PositiveIntegerField(default=1)

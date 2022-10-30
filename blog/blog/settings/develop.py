@@ -16,6 +16,7 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'dal',
     'dal_select2',
+    'user',
     'mainblog',
     'config',
     'comment',
@@ -28,7 +29,13 @@ INSTALLED_APPS = [
     # 'debug_toolbar',
     # 'pympler',
     # 'debug_toolbar_line_profiler',
+    'crispy_forms',
 ]
+
+#django-crispy-forms 配置项
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
 
 MIDDLEWARE = [
 
@@ -125,3 +132,6 @@ CKEDITOR_UPLOAD_PATH = 'article_images'
 
 #水印
 DEFAULT_FILE_STORAGE = 'blog.storage.WatermarkStorage'
+
+#更新django的User模型类指向，设置为我新增字段后的新模型类
+AUTH_USER_MODEL='user.UserInfo'

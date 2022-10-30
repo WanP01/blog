@@ -8,7 +8,7 @@ from PIL import Image,ImageDraw,ImageFont
 class WatermarkStorage(FileSystemStorage):
     def save(self, name, content, max_length=None):
 
-        if 'image' in content.content_type:
+        if 'img' in content.content_type:
             image = self.watermark_with_text(content,'wanpeng\'s blog','red')
             content = self.convert_image_to_file(image,name)
 
@@ -18,7 +18,7 @@ class WatermarkStorage(FileSystemStorage):
         temp = BytesIO()
         image.save(temp,format='PNG')
         file_size = temp.tell()
-        return InMemoryUploadedFile(temp,None,name,'image/png',file_size,None)
+        return InMemoryUploadedFile(temp,None,name,'img/png',file_size,None)
 
     def watermark_with_text(self,file_obj,text,color,fontfamily=None):
 

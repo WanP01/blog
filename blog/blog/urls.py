@@ -24,6 +24,7 @@ from rest_framework.routers import DefaultRouter
 
 
 from blog.settings import develop
+from blog.view import TemView
 from mainblog.admin import cust_site
 # from mainblog.views import post_list,post_detail,links
 from mainblog.views import IndexView,CategoryView,TagView,PostDetailView,SearchView,AuthorView
@@ -72,6 +73,9 @@ urlpatterns = [
     # re_path(r'^api/post/',post_list,name='post_list'),
     # # re_path(r'^api/post/',PostList.as_view(),name='post_list')
     # re_path(r'^api/',include(router.urls))
+    re_path(r'^user/',include(('user.urls','user'),namespace='user')),
+
+    re_path(r'tem/',TemView,name='tem'),
 
 
 
