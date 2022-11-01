@@ -2,14 +2,19 @@
 {% load crispy_forms_tags %}
 
 {% block form %}
+    <div class='text-center' style="padding-bottom: 10px">
+        <h1>注册</h1>
+    </div>
     <form class="login" method="POST" action="{% url 'user:register' %}" novalidate>
         {% csrf_token %}
+
         <div class="m-auto" style="width: 80%">
             {{ form|crispy }}
-            <span style="font-size: 15px;font-weight: bold;color: rgb(255,0,0);">{{ message1 }}</span>
+            <span style="font-size: 15px;font-weight: bold;color: rgb(255,0,0);">{{ message }}</span>
         </div>
+
         <div  style="text-align: right;width: 90%" >
-             <a href={% url 'user:login' %} style="margin:5px">已有帐号登录</a>
+             <a href={% url 'user:login' %} style="margin-right:45%;">已有帐号登录</a>
             <button class="btn btn-info btn-sm rounded-0 " type="submit">注册</button>
         </div>
     </form>

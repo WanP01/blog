@@ -9,32 +9,36 @@ class RegisterForms(forms.ModelForm):
 
     username = forms.CharField(
         label='姓名',
+        min_length=4,
         max_length=50,
         widget=forms.TextInput,
     )
 
     email = forms.CharField(
         label='电子邮箱',
+        min_length=4,
         max_length=50,
         widget=forms.EmailInput,
     )
 
     phone = forms.CharField(
         label='手机号码',
+        min_length=11,
         max_length=50,
         widget=forms.NumberInput,
     )
 
     password = forms.CharField(
         label='密码',
-        min_length=4,
-        max_length=50,
+        min_length=8,
+        max_length=16,
         widget=forms.PasswordInput,
     )
 
     password_confirm = forms.CharField(
         label='确认密码',
-        max_length=50,
+        min_length=8,
+        max_length=16,
         widget=forms.PasswordInput,
     )
 
@@ -48,6 +52,49 @@ class RegisterForms(forms.ModelForm):
             # field.widget.attrs.update({'class':'form-control ','placeholder':'请输入%s'%field.label,'style':'width:30%;'})
             field.widget.attrs.update(
                 {'class': 'form-control '})
+
+    def clean_username(self):
+        post_username = self.cleaned_data['username']
+
+        if UserInfo.objects.filter(username=post_username):
+            raise forms.ValidationError('名称已注册')
+        return post_username
+
+    def clean_email(self):
+        post_email = self.cleaned_data['email']
+        if UserInfo.objects.filter(email=post_email):
+            raise forms.ValidationError('邮箱已注册')
+        return post_email
+
+    def clean_phone(self):
+        post_phone = self.cleaned_data['phone']
+        if UserInfo.objects.filter(phone=post_phone):
+            raise forms.ValidationError('手机号已注册')
+        return post_phone
+
+    #密码强度验证正则表达式
+    psw_re = r'^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$'
+
+
+    def clean_password(self):
+        post_password = self.cleaned_data['password']
+        if not re.match(self.psw_re,post_password):
+            raise forms.ValidationError('密码不符合规范，8-16位，密码需包含数字，大写和小写字母！')
+        return post_password
+
+
+
+    def clean_password_confirm(self):
+        post_password_confirm = self.cleaned_data['password_confirm']
+        #这一步是为了让上下password 和 password confirm 都能报错 密码格式不对
+        try:
+            post_password = self.cleaned_data['password']
+        except Exception as e:
+            raise forms.ValidationError('密码不符合规范，8-16位，密码需包含数字，大写和小写字母！')
+        else:
+            if post_password != post_password_confirm:
+                raise forms.ValidationError('密码不一致')
+        return post_password_confirm
 
         # self.helper = FormHelper()
         # Fields = []

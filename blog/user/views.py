@@ -9,9 +9,7 @@ from .forms import RegisterForms
 from django.views import generic
 from user.models import UserInfo
 from user.forms import RegisterForms,LoginForms
-
-
-
+from user.tools.password_tools import pw_md5
 
 
 # Create your views here.
@@ -43,21 +41,22 @@ class UserLogin(generic.ListView):
             account=userforms.cleaned_data['account']
             if account.isdigit() and re.match(self.numregex,account):
                 phone = re.match(self.numregex,account).group()
-                userobj=UserInfo.objects.filter(phone=phone)
+                userobj=UserInfo.objects.get(phone=phone)
             elif re.match(self.emaregex,account):
                 email = re.match(self.emaregex,account).group()
-                userobj = UserInfo.objects.filter(email=email)
+                userobj = UserInfo.objects.get(email=email)
             else:
-                userobj = UserInfo.objects.filter(username=account)
+                userobj = UserInfo.objects.get(username=account)
             #不存在就生成错误提示
             if not userobj:
                 message="账号不存在,请重试!"
                 # pass
-            #存在账号则进入到密码验证（在register部分会规定每个账号数值只有一个，所以这里只有有一个或没有两种情况）
+            #存在账号则进入到密码验证（在register部分会规定每个账号数值只有一个，所以这里只有有一个或没有两种情况,不存在两个账号）
             else:
-                user_password = userobj.get('password',None)
+                user_password = userobj.password
                 post_password = userforms.cleaned_data['password']
-                if user_password == post_password:
+                p_p_m = pw_md5(post_password)
+                if user_password == p_p_m:
                     return HttpResponseRedirect(reverse('index'))
                 else:
                     message = "用户名或密码错误，请重试!"
@@ -65,7 +64,7 @@ class UserLogin(generic.ListView):
 
             context = {
                 'form':userforms,
-                'message1':message,
+                'message':message,
             }
         return render(request,self.template_name,context)
 
@@ -82,6 +81,24 @@ class UserRegister(generic.ListView):
         }
         return render(request,self.template_name,context)
     def post(self,request,*args, **kwargs):
-        pass
+        userforms = RegisterForms(request.POST)
+
+        #初步数据验证OK(包括密码强度；密码一致性；用户名，邮箱，手机号唯一性；正确格式等)
+        if userforms.is_valid():
+            #存储加密后的密码
+            password = userforms.cleaned_data['password']
+            instance = userforms.save(commit=False)
+            instance.password = pw_md5(password)
+            instance.save()
+            userforms.save_m2m()
+            return HttpResponseRedirect(reverse('index'))
+        else:
+            message = '注册失败，请重试'
+        context = {
+            'form':userforms,
+            'message':message,
+        }
+        return render(request,self.template_name,context)
+
 
 
