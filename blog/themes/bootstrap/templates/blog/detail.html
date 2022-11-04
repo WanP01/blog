@@ -10,7 +10,7 @@
 <script>hljs.initHighlightingOnLoad();</script>
 {% endblock %}
 
-{% block main %}
+{% block left %}
     {% if post %}
     <h1>{{ post.title }}</h1>
     <div>
@@ -35,6 +35,17 @@
     {% comment_block request.path %}
     {{ request.path }}
 
+{% endblock %}
 
-
+{% block right %}  <!---->
+    {% for sidebar in sidebars %}
+    <div class="card sidebar">
+        <div class="card-body">
+            <h4 class="card-title">{{ sidebar.title }}</h4>
+            <p>
+            {{ sidebar.content_html }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
 {% endblock %}

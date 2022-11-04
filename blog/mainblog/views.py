@@ -44,6 +44,15 @@ class IndexView(CommonViewMixin,ListView):
     context_object_name = 'post_list'
     template_name = 'blog/list.html'
 
+    # def get(self,request,*args,**kwargs):
+    #     response = super().get(request,*args,**kwargs)
+    #     print(request.GET)
+    #     print(request.path)
+    #     return response
+
+
+
+
 
 
 class CategoryView(IndexView):

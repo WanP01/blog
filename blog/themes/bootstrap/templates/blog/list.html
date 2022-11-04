@@ -11,7 +11,7 @@
 {% endblock %}
 
 
-{% block main %}
+{% block left %}
     {% for post in post_list %}
     <div class="card post">
         <div class="card-body">
@@ -39,4 +39,18 @@
     {% endif %}
     {% endif %}
 
+{% endblock %}
+
+
+{% block right %}  <!---->
+    {% for sidebar in sidebars %}
+    <div class="card sidebar">
+        <div class="card-body">
+            <h4 class="card-title">{{ sidebar.title }}</h4>
+            <p>
+            {{ sidebar.content_html }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
 {% endblock %}

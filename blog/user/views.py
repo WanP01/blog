@@ -8,20 +8,20 @@ from django.views import View
 from .forms import RegisterForms
 from django.views import generic
 from user.models import UserInfo
-from user.forms import RegisterForms,LoginForms
+from user.forms import RegisterForms,LoginForms,UserInfoForms
 from user.tools.password_tools import pw_md5
 
 
 # Create your views here.
-class UserLogin(generic.ListView):
-    model = UserInfo
+#登录
+class UserLogin(View):
     template_name = 'user/login.html'
 
     #验证account的正则表达式（用户名，手机号码, Email）
     numregex = r'^1\d{10}$'
     emaregex = r'\w+@\w+.com'
 
-    def get(self,request,*args, **kwargs):
+    def get(self,request):
        # response = super().get(request,*args, **kwargs)
        userforms = LoginForms()
        context = {
@@ -30,7 +30,7 @@ class UserLogin(generic.ListView):
        }
        return render(request,self.template_name,context)
 
-    def post(self,request,*args, **kwarg):
+    def post(self,request):
         userforms=LoginForms(request.POST)
 
         #先验证基本数据长度
@@ -57,7 +57,13 @@ class UserLogin(generic.ListView):
                 post_password = userforms.cleaned_data['password']
                 p_p_m = pw_md5(post_password)
                 if user_password == p_p_m:
+                    #session中存入用户id,姓名，和登录状态
+                    request.session['user_id'] = userobj.id
+                    request.session['user_name'] = userobj.username
+                    request.session['is_login'] = True
+
                     return HttpResponseRedirect(reverse('index'))
+
                 else:
                     message = "用户名或密码错误，请重试!"
                     # pass
@@ -68,19 +74,20 @@ class UserLogin(generic.ListView):
             }
         return render(request,self.template_name,context)
 
+#注册
+class UserRegister(View):
 
-class UserRegister(generic.ListView):
-
-    model = UserInfo
     template_name = 'user/register.html'
 
-    def get(self,request,*args, **kwargs):
+    def get(self,request):
         userforms=RegisterForms()
         context = {
             "form":userforms,
         }
         return render(request,self.template_name,context)
-    def post(self,request,*args, **kwargs):
+
+
+    def post(self,request):
         userforms = RegisterForms(request.POST)
 
         #初步数据验证OK(包括密码强度；密码一致性；用户名，邮箱，手机号唯一性；正确格式等)
@@ -89,6 +96,12 @@ class UserRegister(generic.ListView):
             password = userforms.cleaned_data['password']
             instance = userforms.save(commit=False)
             instance.password = pw_md5(password)
+
+            # session中存入用户id,姓名，和登录状态
+            request.session['user_id'] = instance.id
+            request.session['user_name'] = instance.username
+            request.session['is_login'] = True
+
             instance.save()
             userforms.save_m2m()
             return HttpResponseRedirect(reverse('index'))
@@ -100,5 +113,49 @@ class UserRegister(generic.ListView):
         }
         return render(request,self.template_name,context)
 
+#登出
+def UserLogout(request):
+
+    request.session.flush()
+
+    return HttpResponseRedirect(reverse('index'))
+
+#用户信息
+class UserDetail(View):
+
+    def get(self,request,user_id):
+        login_id = request.user_id
+        # print(type(login_id))
+        # print(user_id)
+        # print(str(login_id)==user_id)
+        user_detail = UserInfo.objects.filter(id=user_id)
+
+        #如果登录用户和要访问的用户一致，给出全部信息
+        if str(login_id) == user_id:
+            context = {
+                'user_detail':user_detail,
+                'is_self':True,
+            }
+            return render(request,'user/userdetail.html',context)
+        # 如果登录用户和要访问的用户不一致，给出部分信息
+        else:
+            user_detail= user_detail.values('username','nickname','email','avatar','sign','info','last_login')
+            context = {
+                'user_detail': user_detail,
+                'is_self': False,
+            }
+            return render(request, 'user/userdetail.html', context)
+
+
+class UserDetailChange(View):
+
+    def get(self,request):
+
+        user_de_ch_forms =UserInfoForms()
+        context={
+            'form':user_de_ch_forms,
+        }
+
+        return render(request, 'user/userdetailchange.html', context)
 
 

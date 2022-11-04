@@ -162,6 +162,15 @@ class LoginForms(forms.ModelForm):
     #
     #     password
 
+class UserInfoForms(forms.ModelForm):
+
+    avatar = forms.ImageField(
+        label='头像'
+    )
+
+    class Meta:
+        model = UserInfo
+        fields = ['avatar','username','nickname','phone','email','sign','info',]
 
 
 
