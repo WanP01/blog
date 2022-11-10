@@ -1,6 +1,8 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import re
+from user.models import UserInfo
+
 
 class LoginRequireMiddleware:
     def __init__(self,get_response):
@@ -14,16 +16,18 @@ class LoginRequireMiddleware:
         exclude_middleware = r'(login)|(register)'
         # print(request.path_info)
         re_url = re.compile(exclude_middleware)
-        print(re_url.search(request.path_info))
+        # print(re_url.search(request.path_info))
         if not re_url.search(request.path_info):
             if not request.session.get('is_login',None):
                 return HttpResponseRedirect(reverse('user:login'))
             else:
                 request.is_login = request.session.get('is_login',None)
-                request.user_id = request.session.get('user_id',None)
                 request.user_name = request.session.get('user_name', None)
-
-                print(request.user_id)
+                request.is_staff = UserInfo.objects.get(username=request.user_name).is_staff
+                request.user_id = UserInfo.objects.get(username=request.user_name).id
+                # print(request.is_login)
+                # print(request.user_id)
+                # print(request.user_name)
 
         response = self.get_response(request)
 

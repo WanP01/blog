@@ -34,7 +34,7 @@ class CategoryQwnerFilter(admin.SimpleListFilter):
 
 
 
-@admin.register(Category,site=cust_site)
+@admin.register(Category)
 class CategoryAdmin(BaseAdmin):
     inlines = (PostInline,)
     list_display = ('name','status','is_nav','created_time','owner')
@@ -48,7 +48,7 @@ class CategoryAdmin(BaseAdmin):
     def post_count(self,obj):
         return obj.post_set().Count()
 
-@admin.register(Tag,site=cust_site)
+@admin.register(Tag)
 class TagAdmin(BaseAdmin):
     list_display = ('name','status','created_time','owner')
     fields = ('name','status')

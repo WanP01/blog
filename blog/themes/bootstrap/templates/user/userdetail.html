@@ -6,9 +6,9 @@
 {% endblock %}
 
 {%  block right %}
-{#    用户详情页面   #}
+    用户详情页面
 
-    <div class="card rounded-0 px-3 px-lg-4">
+    <div class="card rounded-0 px-3 px-lg-4" style="margin-top: 5%">
         <div class="card-header text-center bg-white py-2"><h3 class="my-1 text-info">个人资料</h3></div>
         <div class="card-body">
             <ul class="list-group">
@@ -31,7 +31,7 @@
                     <span class="font-weight-bold">邮 &emsp;箱：</span>
                     <span>{{ user.email }}</span>
                 </li>
-                {# 是本人就显示敏感信息#}
+                 是本人就显示敏感信息
                 {%  if is_self %}
                     <li class="list-group-item  border-0">
                         <span class="font-weight-bold">手&emsp;机：</span>
@@ -41,7 +41,7 @@
 
                  <li class="list-group-item  border-0">
                     <span class="font-weight-bold">最后登录：</span>
-                    <span>{{ user.lastlogin }}</span>
+                    <span>{{ user.last_login }}</span>
                 </li>
 
             {% endfor %}
@@ -49,7 +49,6 @@
         </div>
         {%  if is_self %}
             <div class="text-center mb-5" id="social-login">
-                <div class="login-title"><span>更多操作</span></div>
                 <div class="more-link mt-3">
                     <a class="btn btn-info btn-sm rounded-0 mx-lg-3 mx-sm-2" href="{% url 'user:userdetailchange' %}">修改资料</a>
                     <a class="btn btn-info btn-sm rounded-0 mx-lg-3 mx-sm-2" href="#">修改密码</a>
@@ -57,6 +56,37 @@
             </div>
         {% endif %}
     </div>
+{% endblock %}
 
+{% block left %}
 
+    <div class="card rounded-0 px-3 px-lg-4" style="margin-top: 2.5%">
+            <div class="text-secondary font-weight-bold py-2 f-15 choice">
+                {% url 'user:userinfo' user.id as base_index %}
+                {% url 'user:userinf_hot' user.id as hot_index %}
+             {%  for user in user_detail %}
+                <a class="pb-2 ml-4 {% if sort == 'lasted' %}active{% endif %}" href="{% url 'user:userdetail' user.id 'lasted' %}">
+                    <i class="fa fa-fire mr-1"></i>时间排序</a>
+                <a class="pb-2 ml-4 {% if sort == 'hot' %}active{% endif %}" href="{% url 'user:userdetail' user.id 'hot' %}">
+                    <i class="fa fa-fire mr-1"></i>热度排序</a>
+            {% endfor %}
+            </div>
+
+            {% for blog in user_blogs %}
+        <div class="card post">
+            <div class="card-body">
+                <h5 class="card-title"><a href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h5>
+                <span class="card-link">作者:<a href="{% url 'author' post.owner_id %}">{{ post.owner.username }}</a></span>
+                <span class="card-link">分类:<a href="{% url 'category-list' post.category_id %}">{{ post.category.name }}</a></span>
+                 <span class="card-link">标签:
+                    {% for tag in post.tag.all %}
+                    <a href="{% url 'tag-list' tag.id %}">{{ tag.name }}</a>
+                    {% endfor %}
+                </span>
+                <hr/>
+                <p class="card-text">{{ post.desc }}<a href="{% url 'post-detail' post.id %}">完整内容</a></p>
+            </div>
+        </div>
+        {% endfor%}
+    </div>
 {% endblock %}

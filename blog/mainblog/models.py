@@ -89,15 +89,37 @@ class Post(models.Model):
 
     is_md = models.BooleanField(default=False,verbose_name='Markdown语法')
 
-    @classmethod
-    def hot_posts(cls):
-        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv').only('title','id')
+
+    def save(self,*args,**kwargs):
+        if self.is_md:
+            self.content_html = mistune.markdown(self.content)
+        else:
+            self.content_html = self.content
+        super().save(*args,**kwargs)
+
+
 
     class Meta:
         verbose_name = verbose_name_plural = '文章'
         ordering = ['-id']
+
     def __str__(self):
         return self.title
+
+
+    "最多點擊量（最熱）"
+    @classmethod
+    def hot_posts(cls):
+        return cls.objects.filter(status=cls.STATUS_NORMAL).order_by('-pv').only('title','id')
+
+    "最新文章"
+    @classmethod
+    def latest_posts(cls):
+        post_list = cls.objects.filter(status=cls.STATUS_NORMAL).select_related('owner', 'category').prefetch_related(
+            'tag')
+        return post_list
+
+
 
     @staticmethod
     def get_by_tag(tag_id):
@@ -123,17 +145,6 @@ class Post(models.Model):
 
         return category,post_list
 
-    @classmethod
-    def latest_posts(cls):
-        post_list = cls.objects.filter(status=cls.STATUS_NORMAL).select_related('owner','category').prefetch_related('tag')
-        return post_list
-
-    def save(self,*args,**kwargs):
-        if self.is_md:
-            self.content_html = mistune.markdown(self.content)
-        else:
-            self.content_html = self.content
-        super().save(*args,**kwargs)
 
     @cached_property
     def tags(self):

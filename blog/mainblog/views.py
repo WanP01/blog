@@ -49,7 +49,11 @@ class IndexView(CommonViewMixin,ListView):
     #     print(request.GET)
     #     print(request.path)
     #     return response
-
+    # def get_ordering(self):
+    #     sort = self.kwargs.get('sort',None)
+    #     if sort:
+    #         return ('-pv','-created_time','-id')
+    #     return ('-created_time','-pv')
 
 
 
