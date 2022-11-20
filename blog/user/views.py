@@ -1,12 +1,15 @@
+import os
 import re
 
 from django.contrib.auth import authenticate
+from django.core.files.base import ContentFile
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views import View
 
+from blog.settings import develop
 from mainblog.models import Post
 from .forms import RegisterForms
 from django.views import generic
@@ -170,14 +173,61 @@ class UserDetail(View):
 
 class UserDetailChange(View):
 
+    """采用内置django後臺"""
     def get(self,request):
 
-        user_de_ch_forms =UserInfoForms()
-        context={
-            'form':user_de_ch_forms,
-        }
+        if request.GET.get('param')=='user':
+        #      return HttpResponseRedirect('/admin/user/userinfo/%s/change/'%request.user_id)
 
-        return render(request, 'user/userdetailchange.html', context)
+                user_object = UserInfo.objects.filter(id=request.user_id).first()
+                user_de_ch_forms =UserInfoForms(instance=user_object)
+                context={
+                    'form':user_de_ch_forms,
+                }
+
+                return render(request, 'user/userdetailchange.html', context)
+
+        elif request.GET.get('param')=='blog':
+            return HttpResponseRedirect('/admin/mainblog/post')
+
+    def post(self, request):
+        user_object = UserInfo.objects.get(id=request.user_id)
+
+        # form.save()保存图片失败
+        # print(request.FILES)
+        # user_de_ch_forms = UserInfoForms(data=request.POST,files=request.FILES,instance=user_object)
+        # if user_de_ch_forms.is_valid():
+        #     print(user_de_ch_forms.cleaned_data['avatar'])
+        #
+        #     user_object = user_de_ch_forms.save(commit=False)
+        #     user_object.avatar = request.FILES.get('avatar')
+        #     print(request.FILES.get('avatar'))
+        #     user_object.save()
+        #     user_de_ch_forms.save_m2m()
+        #
+        #     request.session['user_name'] = request.POST['username']
+        #     print(UserInfo.objects.get(id=request.user_id).avatar)
+
+        """常规保存"""
+        # user_object.avatar= request.FILES['avatar']
+        # print(request.FILES['avatar'])
+        # print(type(request.FILES['avatar']))
+        # # print(request.FILES.get('avatar').read())
+        # print(user_object.avatar)
+        # user_object.save()
+        # print(UserInfo.objects.get(id=request.user_id).avatar)
+        pic = request.FILES.get('avatar')
+        UserInfo.objects.create(username='wanpeng3',password='8290680',avatar=pic)
+        # """方法一"""
+        # file = request.FILES.get('avatar')
+        # print(file)
+        # filename = os.path.join(develop.MEDIA_ROOT,file.name)
+        # print(filename)
+        # with open(filename,'wb') as f:
+        #     picture=file.file.read()
+        #     f.write(picture)
 
 
-
+        return HttpResponseRedirect(reverse('user:userdetail',args=[request.user_id,'lasted']))
+        # else:
+        #     return render(request,'user/userdetailchange.html',{'form':user_de_ch_forms})

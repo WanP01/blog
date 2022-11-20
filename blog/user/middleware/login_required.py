@@ -13,7 +13,7 @@ class LoginRequireMiddleware:
         #view视图之前的代码
         # print('view之前')
         #避免陷入死循环（要排除login，register页面的middleware检测）
-        exclude_middleware = r'(login)|(register)'
+        exclude_middleware = r'(login)|(register)|(logout)'
         # print(request.path_info)
         re_url = re.compile(exclude_middleware)
         # print(re_url.search(request.path_info))

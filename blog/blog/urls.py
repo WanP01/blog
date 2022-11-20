@@ -74,12 +74,10 @@ urlpatterns = [
     # # re_path(r'^api/post/',PostList.as_view(),name='post_list')
     # re_path(r'^api/',include(router.urls))
     re_path(r'^user/',include(('user.urls','user'),namespace='user')),
-
+    re_path(r'^image/',include(('image.urls','image'),namespace='image')),
     re_path(r'tem/',TemView,name='tem'),
 
-
-
-] + static(develop.MEDIA_URL,document_root=develop.MEDIA_ROOT)
+]+static('/media/',document_root='/home/wanpeng/Desktop/django_blackhorse/django_blog/blog/media')
 
 
 if develop.DEBUG:

@@ -6,33 +6,35 @@
 {% endblock %}
 
 {% block other %}
-<div class="container-fluid form-control" style="color: rgb(255,255,255);width:30%;margin-top: 5%;padding:30px 50px 50px 50px;background-color:rgba(32,32,32,0.8); ">
-    {% block form %}
-    <div class='text-center' style="padding-bottom: 10px">
-        <h1>登录</h1>
+    <div class="container-fluid form-control" style="color: rgb(255,255,255);width:30%;margin-top: 5%;padding:30px 50px 50px 50px;background-color:rgba(32,32,32,0.8); ">
+        {% block form %}
+        <div class='text-center' style="padding-bottom: 10px">
+            <h1>登录</h1>
+        </div>
+        <form class="login" method="POST" action="{% url 'user:login' %}" novalidate>
+            {% csrf_token %}
+
+            <div class="m-auto" style="width: 80%">
+                {{ form|crispy }}
+                <span style="font-size: 15px;font-weight: bold;color: rgb(255,0,0);">{{ message }}</span>
+
+            </div>
+
+    {#        {% if redirect_field_value %}\#}
+    {#        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>#}
+    {#        {% endif %}#}
+        {#    <a class="secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>#}
+            <div  style="text-align: right;width: 90%" >
+                <a href={% url 'tem' %}>忘记密码了？</a>
+                <a href={% url 'tem' %}>忘记帐号了？</a>
+                <button class="btn btn-info btn-sm rounded-0 " type="submit">登录</button>
+                 <a href={% url 'user:register' %} style="margin:5px">注册</a>
+            </div>
+        </form>
+        {% endblock %}
+
     </div>
-    <form class="login" method="POST" action="{% url 'user:login' %}" novalidate>
-        {% csrf_token %}
-
-        <div class="m-auto" style="width: 80%">
-            {{ form|crispy }}
-            <span style="font-size: 15px;font-weight: bold;color: rgb(255,0,0);">{{ message }}</span>
-
-        </div>
-
-{#        {% if redirect_field_value %}\#}
-{#        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>#}
-{#        {% endif %}#}
-    {#    <a class="secondaryAction" href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>#}
-        <div  style="text-align: right;width: 90%" >
-            <a href={% url 'tem' %}>忘记密码了？</a>
-            <a href={% url 'tem' %}>忘记帐号了？</a>
-            <button class="btn btn-info btn-sm rounded-0 " type="submit">登录</button>
-             <a href={% url 'user:register' %} style="margin:5px">注册</a>
-        </div>
-    </form>
-    {% endblock %}
-
-</div>
 {% endblock %}
 
+{% block main %}
+{% endblock %}

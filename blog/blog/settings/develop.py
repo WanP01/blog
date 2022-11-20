@@ -11,7 +11,8 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    'rest_framework',
+    'image',
+    # 'rest_framework',
     'ckeditor',
     'ckeditor_uploader',
     'dal',
@@ -39,41 +40,41 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 MIDDLEWARE = [
 
-    'mainblog.middleware.user_id.UserIDMiddleware',
+    'mainblog.middleware.user_id.UserIDMiddleware', #浏览用户计数
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'user.middleware.login_required.LoginRequireMiddleware',
+    'user.middleware.login_required.LoginRequireMiddleware', #登录验证
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 
 #django_debug_tools
 INTERNAL_IPS = ['*','127.0.0.1']
 
-DEBUG_TOOLBAR_PANELS = [
-    'debug_toolbar.panels.history.HistoryPanel',
-    'debug_toolbar.panels.versions.VersionsPanel',
-    'debug_toolbar.panels.timer.TimerPanel',
-    'debug_toolbar.panels.settings.SettingsPanel',
-    'debug_toolbar.panels.headers.HeadersPanel',
-    'debug_toolbar.panels.request.RequestPanel',
-    'debug_toolbar.panels.sql.SQLPanel',
-    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-    'debug_toolbar.panels.templates.TemplatesPanel',
-    'debug_toolbar.panels.cache.CachePanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
-    'debug_toolbar.panels.logging.LoggingPanel',
-    'debug_toolbar.panels.redirects.RedirectsPanel',
-    'debug_toolbar.panels.profiling.ProfilingPanel',
-    # 'djdt_flamegraph.FlamegraphPanel',#仅单线程可用 python3 manage.py runserver 0.0.0.0:8000 --noreload --nothreading
-    # 'pympler.panels.MemoryPanel',
-    # 'debug_toolbar_line_profiler.panel.ProfilingPanel',
-]
+# DEBUG_TOOLBAR_PANELS = [
+#     'debug_toolbar.panels.history.HistoryPanel',
+#     'debug_toolbar.panels.versions.VersionsPanel',
+#     'debug_toolbar.panels.timer.TimerPanel',
+#     'debug_toolbar.panels.settings.SettingsPanel',
+#     'debug_toolbar.panels.headers.HeadersPanel',
+#     'debug_toolbar.panels.request.RequestPanel',
+#     'debug_toolbar.panels.sql.SQLPanel',
+#     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+#     'debug_toolbar.panels.templates.TemplatesPanel',
+#     'debug_toolbar.panels.cache.CachePanel',
+#     'debug_toolbar.panels.signals.SignalsPanel',
+#     'debug_toolbar.panels.logging.LoggingPanel',
+#     'debug_toolbar.panels.redirects.RedirectsPanel',
+#     'debug_toolbar.panels.profiling.ProfilingPanel',
+#     # 'djdt_flamegraph.FlamegraphPanel',#仅单线程可用 python3 manage.py runserver 0.0.0.0:8000 --noreload --nothreading
+#     # 'pympler.panels.MemoryPanel',
+#     # 'debug_toolbar_line_profiler.panel.ProfilingPanel',
+# ]
 
 # print(BASE_DIR)
 
@@ -99,7 +100,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blog_test',
+        'NAME': 'blog',
         'USER': 'root',
         'HOST': '127.0.0.1',
         'PORT':'3306',
@@ -129,6 +130,7 @@ CKEDITOR_CONFIGS = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
 CKEDITOR_UPLOAD_PATH = 'article_images'
 
 #水印
