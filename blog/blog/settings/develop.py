@@ -43,6 +43,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'user.middleware.login_required.LoginRequireMiddleware',
+    'user.middleware.URL_permit.URLPermitMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -99,7 +100,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blog_test',
+        'NAME': 'blog',
         'USER': 'root',
         'HOST': '127.0.0.1',
         'PORT':'3306',
@@ -123,7 +124,14 @@ CKEDITOR_CONFIGS = {
         'width':1200,
         'tabSpace':4,
         'extraPlugins':'codesnippet',
-    }
+    },
+    'style_1':{
+        'toolbar':'full',
+        'height':300,
+        'width':3000,
+        'tabSpace':4,
+        'extraPlugins':'codesnippet',
+    },
 
 }
 
@@ -131,8 +139,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 CKEDITOR_UPLOAD_PATH = 'article_images'
 
-#水印
-DEFAULT_FILE_STORAGE = 'blog.storage.WatermarkStorage'
+# #水印,开启这个会导致图片Imagefield & Filefield 存储失败
+# DEFAULT_FILE_STORAGE = 'blog.storage.WatermarkStorage'
 
 #更新django的User模型类指向，设置为我新增字段后的新模型类
 AUTH_USER_MODEL='user.UserInfo'

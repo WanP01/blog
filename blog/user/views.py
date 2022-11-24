@@ -1,6 +1,6 @@
 import re
 
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, logout, login
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -68,7 +68,8 @@ class UserLogin(View):
                         # request.session['user_id'] = user.id
                         request.session['user_name'] = user.username
                         request.session['is_login'] = True
-
+                        # 同时登录后台admin
+                        login(request, UserInfo.objects.filter(username=request.session['user_name']).first())
                         return HttpResponseRedirect(reverse('index'))
 
                     else:
@@ -115,6 +116,9 @@ class UserRegister(View):
 
             instance.save()
             userforms.save_m2m()
+            # 同时登录后台admin
+            login(request, UserInfo.objects.filter(username=request.session['user_name']).first())
+
             return HttpResponseRedirect(reverse('index'))
         else:
             message = '注册失败，请重试'
@@ -127,7 +131,10 @@ class UserRegister(View):
 '''登出'''
 def UserLogout(request):
 
+    '''登出blog'''
     request.session.flush()
+    '''登出admin后台'''
+    logout(request)
 
     return HttpResponseRedirect(reverse('index'))
 
@@ -170,14 +177,33 @@ class UserDetail(View):
 
 class UserDetailChange(View):
 
+
+    # 直接采用django admin 后台 user 编辑页面
     def get(self,request):
 
-        user_de_ch_forms =UserInfoForms()
+        user_object = UserInfo.objects.filter(id=request.user_id).first()
+        user_forms =UserInfoForms(instance=user_object)
         context={
-            'form':user_de_ch_forms,
+            'form':user_forms,
         }
 
         return render(request, 'user/userdetailchange.html', context)
+
+    def post(self,request):
+
+        user_object = UserInfo.objects.filter(id=request.user_id).first()
+        user_forms = UserInfoForms(request.POST,request.FILES,instance=user_object)
+
+        if user_forms.is_valid():
+            user_forms.save()
+            return HttpResponseRedirect(reverse('user:userdetail',args=[request.user_id,'lasted']))
+        else:
+            context = {
+                'form': user_forms,
+            }
+            return render(request,'user/userdetailchange.html', context)
+
+
 
 
 

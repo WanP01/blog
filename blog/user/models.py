@@ -20,7 +20,7 @@ class UserInfo(AbstractUser):
     # 在django 自带的User类里面增加手机号，昵称，头像，签名，简介和更新时间
     phone = models.CharField(max_length=11,default='')
     nickname = models.CharField(max_length=11,verbose_name='昵称')
-    avatar = models.ImageField(upload_to='avatar',null=True)
+    avatar = models.ImageField(upload_to='avatar',null=True,default='avatar/default/1.jpeg')
     sign = models.CharField(max_length=50,verbose_name='签名',default=default_sign)
     info = models.CharField(max_length=150,verbose_name='个人简介',default='')
     updated_time = models.DateTimeField(auto_now_add=True)

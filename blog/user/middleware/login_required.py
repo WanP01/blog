@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 import re
 from user.models import UserInfo
@@ -35,3 +35,4 @@ class LoginRequireMiddleware:
         # print('view 之后')
 
         return response
+

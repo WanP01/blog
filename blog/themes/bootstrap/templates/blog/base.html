@@ -30,10 +30,14 @@
         min-height: 100%;
         height:auto !important;
         margin:0 auto -60px;
+        {#position: relative;#}
     }
     .push
     footer{
         height:60px;
+        {#bottom:0;#}
+        {#position: absolute;#}
+        width: 100%;
     }
     </style>
   </head>
@@ -128,9 +132,11 @@
                 </div>
             </div>
         </div>
+        {% endblock %}
+
         <div class="push"></div>
       </div>
-      {% endblock %}
+
 
     <footer class="footer">
         {% block footer %}

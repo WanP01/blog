@@ -1,5 +1,6 @@
 import re
 
+from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, HTML, Field
 from django import forms
@@ -164,17 +165,20 @@ class LoginForms(forms.ModelForm):
 
 class UserInfoForms(forms.ModelForm):
 
-    avatar = forms.ImageField(
-        label='头像'
-    )
+    avatar = forms.ImageField(required=False,)
+    phone = forms.CharField(required=False,)
+
+    info = forms.CharField(widget=CKEditorUploadingWidget(), label='个人简介', required=False)
+    nickname = forms.CharField(required=False,label='昵称')
 
     class Meta:
         model = UserInfo
         fields = ['avatar','username','nickname','phone','email','sign','info',]
 
-
-
-
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        for name,f in self.fields.items():
+            f.widget.attrs.update({'class':'form-control'})
 
 
 

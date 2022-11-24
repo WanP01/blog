@@ -1,3 +1,5 @@
+
+
 {% extends 'blog/base.html' %}
 {% load crispy_forms_tags %}
 {% load static %}
@@ -6,7 +8,7 @@
 {% endblock %}
 
 {%  block right %}
-    用户详情页面
+{#    用户详情页面#}
 
     <div class="card rounded-0 px-3 px-lg-4" style="margin-top: 5%">
         <div class="card-header text-center bg-white py-2"><h3 class="my-1 text-info">个人资料</h3></div>
@@ -14,7 +16,7 @@
             <ul class="list-group">
              {%  for user in user_detail %}
                 <li class="list-group-item text-center border-0" id="profile-avatar">
-                    {{ user.avatar }}
+                    <img src="{{ user.avatar.url }}"/>
                 </li>
 
                 <li class="list-group-item  border-0">
@@ -31,7 +33,7 @@
                     <span class="font-weight-bold">邮 &emsp;箱：</span>
                     <span>{{ user.email }}</span>
                 </li>
-                 是本人就显示敏感信息
+{#                 是本人就显示敏感信息#}
                 {%  if is_self %}
                     <li class="list-group-item  border-0">
                         <span class="font-weight-bold">手&emsp;机：</span>
@@ -50,7 +52,8 @@
         {%  if is_self %}
             <div class="text-center mb-5" id="social-login">
                 <div class="more-link mt-3">
-                    <a class="btn btn-info btn-sm rounded-0 mx-lg-3 mx-sm-2" href="{% url 'user:userdetailchange' %}">修改资料</a>
+                    <a class="btn btn-info btn-sm rounded-0 mx-lg-3 mx-sm-2" href="/admin/user/userinfo/{{ request.user_id }}/change">修改资料</a>
+                    <a class="btn btn-info btn-sm rounded-0 mx-lg-3 mx-sm-2" href="/admin/mainblog/post/">修改文章</a>
                     <a class="btn btn-info btn-sm rounded-0 mx-lg-3 mx-sm-2" href="#">修改密码</a>
                 </div>
             </div>
@@ -90,3 +93,4 @@
         {% endfor%}
     </div>
 {% endblock %}
+
